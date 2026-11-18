@@ -1,19 +1,54 @@
-import { NavLink, } from 'react-router-dom';
+import { NavLink, useNavigate, Link} from 'react-router-dom';
+import type { User } from '../types';
 
-function Navbar(){
+//la interfaz con el user o null y la función para desloguearse
+interface NavbarProps{
+    user: User | null
+    onLogout : () => void
+}
+
+
+function Navbar ({user, onLogout} : NavbarProps) {
+  //hook de react para la navegación entre páginas
+  const navigate = useNavigate()
+  // handler para cerrar sesión y volver a la pantalla de inicio de sesión
+  const handleLogoutClick = () => {
+    onLogout()
+    navigate("/login")
+  }
+
     return(
         <nav>
-          <NavLink to="/"> Unahur Anti-Social Net</NavLink> 
-          <div>
-            <NavLink to="/"> Inicio </NavLink>
-            <NavLink to="/create-post">Crear Post</NavLink>
-            <NavLink to="/profile">Perfil</NavLink>
-          </div>
+          <Link to="/"> Unahur Anti-Social Net</Link> 
 
-          <div>
-            <NavLink to="/login" > Login </NavLink>
-            <NavLink to="/register"> Registrarse </NavLink>
-          </div>
+          <ul>
+            <li>
+              <NavLink to="/"> Inicio </NavLink>
+            </li>
+            <li>
+              <NavLink to="/create-post">Crear Post</NavLink>
+            </li>
+              {user ? (
+                <>
+                  <li>
+                    <NavLink to="/profile">Perfil ({user.nickName})</NavLink>
+                  </li>
+                  <li>
+                    <button type="button" onClick={handleLogoutClick}> Cerrar sesión </button>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <NavLink to="/login">Iniciar sesión</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/register">Registrarse</NavLink>
+                  </li>
+                </>
+              )}
+          </ul>
+
         </nav>
     )
 }
