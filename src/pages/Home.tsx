@@ -55,12 +55,23 @@ function Home() {
                     <div>
                         {posts.map((post) => (
                             <article key={posts.id}>
+                                {/* Descripcion de la publicacion */}
                                 <p>
                                     {posts.description.length > 100 
                                     ? `${posts.description.substring(0, 100)}...` 
                                     : post.description}
                                 </p>
 
+                                {/* Imagenes de las publicaciones (si las hay) */}
+                                {posts.images && posts.images.length > 0 && (
+                                    <div>
+                                        {posts.images.map((img) => (
+                                            <img key={img.id} src={img.url} alt={`Imagen del post ${post.id}`}> </img>
+                                        ))}
+                                    </div>
+                                )}
+                                
+                                {/* Etiquetas de la publicacion */}
                                 {posts.tags && posts.tags.length > 0 && (
                                     <div>
                                         {posts.tags.map((tag) => (
