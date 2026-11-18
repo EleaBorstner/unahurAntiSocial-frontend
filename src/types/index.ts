@@ -10,6 +10,8 @@ export interface Post {
     userId: number
     tags?: Tag[] //el campo tagIds es opcional. Si no se incluye, la publicación se crea sin etiquetas.
     user?: User //este por si hay que mostrar nombre
+    images?: PostImage[]
+    comments?: Comment[]
 }
 
 export interface Comment {

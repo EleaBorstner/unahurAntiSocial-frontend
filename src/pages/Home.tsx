@@ -54,33 +54,33 @@ function Home() {
                 ) : posts.length > 0 ? (
                     <div>
                         {posts.map((post) => (
-                            <article key={posts.id}>
+                            <article key={post.id}>
                                 {/* Descripcion de la publicacion */}
                                 <p>
-                                    {posts.description.length > 100 
-                                    ? `${posts.description.substring(0, 100)}...` 
+                                    {post.description.length > 100 
+                                    ? `${post.description.substring(0, 100)}...` 
                                     : post.description}
                                 </p>
 
                                 {/* Imagenes de las publicaciones (si las hay) */}
-                                {posts.images && posts.images.length > 0 && (
+                                {post.images && post.images.length > 0 && (
                                     <div>
-                                        {posts.images.map((img) => (
+                                        {post.images.map((img) => (
                                             <img key={img.id} src={img.url} alt={`Imagen del post ${post.id}`}> </img>
                                         ))}
                                     </div>
                                 )}
                                 
                                 {/* Etiquetas de la publicacion */}
-                                {posts.tags && posts.tags.length > 0 && (
+                                {post.tags && post.tags.length > 0 && (
                                     <div>
-                                        {posts.tags.map((tag) => (
+                                        {post.tags.map((tag) => (
                                             <span key={tag.id}>#{tag.name} </span>
                                         ))}
                                     </div>
                                 )}
                             
-                                <Link to={`/post/${posts.id}`}>Ver mas</Link>
+                                <Link to={`/post/${post.id}`}>Ver mas</Link>
                             </article>
                         ))}
                     </div>
