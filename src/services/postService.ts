@@ -29,3 +29,26 @@ export async function obtenerPostPorId(id: number){
         throw error
     }
 }
+
+export async function crearPost(description: string, userId?: string) {
+    try {
+        const response = await fetch(`${API_URL}/posts`, {
+            method: 'POST',
+            headers: {'content-Type': 'application/json'},
+            body: JSON.stringify({
+                description,
+                userId
+            }),
+        })
+
+        if (!response.ok) {
+            throw new Error('Error al crear el post: ' + response.status)
+        }
+
+        const data = await response.json()
+        return data
+    }catch (error) {
+        console.error('Error al crear publicacion:', error)
+        throw error
+    }
+}

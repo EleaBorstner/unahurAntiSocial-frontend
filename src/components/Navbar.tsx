@@ -1,19 +1,22 @@
 import { NavLink, } from 'react-router-dom';
 
 function Navbar(){
-    return(
-        <nav>
-          <NavLink to="/"> Unahur Anti-Social Net</NavLink> 
-          <div>
-            <NavLink to="/"> Inicio </NavLink>
-            <NavLink to="/create-post">Crear Post</NavLink>
-            <NavLink to="/profile">Perfil</NavLink>
-          </div>
+    const getNavStyle = ({isActive}: {isActive: boolean}) => ({
+      color: isActive ? '#a67d43' : '#b0b3b8',
+      fontWeight: isActive ? 'bold' : 'normal',
+      textDecoration: 'none',
+    })
 
-          <div>
-            <NavLink to="/login" > Login </NavLink>
-            <NavLink to="/register"> Registrarse </NavLink>
-          </div>
+    return(
+        <nav 
+          className="fixed-bottom border-top py-2 px-3 shadow-lg" 
+          style={{backgroundColor: '#1a1b1a', borderColor: '#333 !important'}}>
+            <div className="container d-flex justify-content-around align-items-center">
+                <NavLink to="/" style={getNavStyle}>Inicio</NavLink>
+                <NavLink to="/create-post" style={getNavStyle}>Crear Publicacion</NavLink>
+                <NavLink to="/profile" style={getNavStyle}>Mi Perfil</NavLink>
+                <NavLink to="/login" style={getNavStyle}>Cerrar Sesion</NavLink>
+            </div>
         </nav>
     )
 }
