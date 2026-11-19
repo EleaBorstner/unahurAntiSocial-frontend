@@ -5,7 +5,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import PostDetail from './pages/PostDetail';
-import CreatePost from './pages/CreatePost';
+import {CreatePost} from './pages/CreatePost';
 import {useState} from 'react';
 import type {User} from './types'
 
