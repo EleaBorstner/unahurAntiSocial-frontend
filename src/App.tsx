@@ -38,7 +38,7 @@ function App() {
         <Route path="/login" element={<Login onLogin={handleLogin}/>} />
         <Route path="/register" element={<Register onLogin={handleLogin}/>} />
         <Route path="/profile" element={<Profile user={user} />} />
-        <Route path="/post/:id" element={<PostDetail />} />
+        <Route path="/post/:id" element={<PostDetail user={user} />} />
         <Route path="/create-post" element={<CreatePost />} />
       </Routes>
     </>
