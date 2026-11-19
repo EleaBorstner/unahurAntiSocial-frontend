@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { obtenerPosts } from "../services/postService"
 import { obtenerUsuario } from "../services/userService";
+import { obtenerImagenesPorPost } from "../services/postImageService";
 import type { User, Post } from "../types"
 
 interface HomeProps {
@@ -19,9 +20,13 @@ function Home({user}: HomeProps) {
 
 
     useEffect(() => {
-        obtenerPosts().then((data) => {
-            setPosts(data)
-            setLoading(false)
+        obtenerPosts().then(async (data) => {
+        const postsConImagenes = await Promise.all(data.map(async (post) => {
+            const imgs = await obtenerImagenesPorPost(post.id).catch(() => []);
+            return { ...post, images: imgs };
+        }));
+        setPosts(postsConImagenes);
+        setLoading(false);
         }).catch((err) => {
             console.error('Error al cargar el post:', err)
             setError('No se pudo conectar con el servidor para cargar las publicaciones.')
@@ -138,7 +143,7 @@ function Home({user}: HomeProps) {
                                             {post.images && post.images.length > 0 && (
                                                 <div className="mb-3">
                                                     {post.images.map((img) => (
-                                                        <img key={img.id} src={img.url} alt={`Imagen del post ${post.id}`}> </img>
+                                                        <img key={img.id} src={img.url} alt={`Imagen del post ${post.id}`} className="img-fluid rounded border border-secondary" style={{ maxHeight: "360px", objectFit: "cover" }}/>
                                                     ))}
                                                 </div>
                                             )}

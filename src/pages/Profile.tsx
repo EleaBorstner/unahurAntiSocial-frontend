@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
 import { Navigate, Link } from "react-router-dom";
 import { obtenerPosts } from "../services/postService";
-import type { User, Post, Comment } from "../types";
+import { obtenerImagenesPorPost } from "../services/postImageService";
+import type { User, Post, PostImage} from "../types";
 
 interface ProfileProps {
   user: User | null;
 }
 
 // Este tipo es para ver la cantidad de comentarios junto al post 
-type PostConComentarios = Post & {
-  cantidadComentarios: number;
+type PostConImagenes = Post & {
+  imagenes: PostImage[];
 };
 
 function Profile({ user }: ProfileProps) {
-  const [misPosts, setMisPosts] = useState<Post[]>([]);
+  const [misPosts, setMisPosts] = useState<PostConImagenes[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null)
@@ -37,10 +38,16 @@ function Profile({ user }: ProfileProps) {
     setLoading(true)
     setError(null)
 
-    obtenerPosts().then((data) => {
+    obtenerPosts().then(async (data) => {
       const userPosts = data.filter((post) => Number(post.UserId) === Number(user.id))
-      setMisPosts(userPosts)
-      setLoading(false)
+      const postsConImagenes = await Promise.all( 
+        userPosts.map(async (post) => {
+          const imgs = await obtenerImagenesPorPost(post.id).catch(() => []);
+          return { ...post, imagenes: imgs };
+        })
+      );
+      setMisPosts(postsConImagenes);
+      setLoading(false);
     }).catch((err) => {
       console.error("error al cargar las publicaciones del perfil:", err)
       setError(
@@ -245,7 +252,19 @@ function Profile({ user }: ProfileProps) {
                       ? `${post.description.substring(0, 100)}...`
                       : post.description}
                   </p>
-                  
+                  {post.imagenes && post.imagenes.length > 0 && (
+                    <div className="d-flex flex-column gap-2 mb-3">
+                    {post.imagenes.map((imagen) => (
+                      <img
+                        key={imagen.id}
+                        src={imagen.url}
+                        alt={`Imagen del post ${post.id}`}
+                        className="img-fluid rounded border border-secondary"
+                        style={{ maxHeight: "360px", objectFit: "cover" }}
+                      />
+                      ))}
+                  </div>
+                  )}
                   {post.Tags && post.Tags.length > 0 && (
                     <div className="mb-3">
                       {post.Tags.map((tag) => (
