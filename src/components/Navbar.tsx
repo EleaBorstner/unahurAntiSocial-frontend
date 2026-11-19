@@ -1,11 +1,26 @@
-import { NavLink, } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
+import type { User } from '../types';
 
-function Navbar(){
+//la interfaz con el user o null y la función para desloguearse
+interface NavbarProps{
+    user: User | null
+    onLogout : () => void
+}
+
+  
+function Navbar({user, onLogout}: NavbarProps){
+    const navigate = useNavigate()
+    
     const getNavStyle = ({isActive}: {isActive: boolean}) => ({
       color: isActive ? '#a67d43' : '#b0b3b8',
       fontWeight: isActive ? 'bold' : 'normal',
       textDecoration: 'none',
     })
+    
+    const handleLogoutClick = () => {
+      onLogout()
+      navigate("/login")
+    }
 
     return(
         <nav 
@@ -13,9 +28,28 @@ function Navbar(){
           style={{backgroundColor: '#1a1b1a', borderColor: '#333 !important'}}>
             <div className="container d-flex justify-content-around align-items-center">
                 <NavLink to="/" style={getNavStyle}>Inicio</NavLink>
-                <NavLink to="/create-post" style={getNavStyle}>Crear Publicacion</NavLink>
-                <NavLink to="/profile" style={getNavStyle}>Mi Perfil</NavLink>
-                <NavLink to="/login" style={getNavStyle}>Cerrar Sesion</NavLink>
+                {user ? (
+                  <>
+                    <NavLink to="/profile" style={getNavStyle}>Perfil ({user.nickName})</NavLink>
+                    <button
+                      type="button"
+                      onClick={handleLogoutClick}
+                      className="btn btn-link p-0"
+                      style={{color: '#b0b3b8', textDecoration: 'none', fontSize: 'inherit'}}
+                    >
+                      Cerrar Sesion
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <NavLink to="/login" style={getNavStyle}>
+                      Iniciar Sesion
+                    </NavLink>
+                    <NavLink to="/register" style={getNavStyle}>
+                      Registrarse
+                    </NavLink>
+                  </>
+                )}
             </div>
         </nav>
     )

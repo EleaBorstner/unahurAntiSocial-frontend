@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-//import Container from "react-bootstrap/Container"
-//import Row from "react-bootstrap/Row"
-//import Col from "react-bootstrap/Col"
-//import Card from "react-bootstrap/Card"
-//import Button from "react-bootstrap/Button"
-//import Badge from "react-bootstrap/Badge"
 import { obtenerPosts } from "../services/postService"
 import { obtenerUsuario } from "../services/userService";
 import type { User, Post } from "../types"
 
-function Home() {
+interface HomeProps {
+    user: User | null
+}
+
+function Home({user}: HomeProps) {
     const [posts, setPosts] = useState<Post[]>([])
     const [loading, setLoading] = useState<boolean>(true)
     const [error, setError] = useState<string | null>(null)
     const [usuariosSugeridos, setUsuariosSugeridos] = useState<User[]>([]);
+
+    const nombreMostrar = user?.nickName || 'Invitado'
+    const inicial = nombreMostrar.charAt(0).toUpperCase()
 
     useEffect(() => {
         obtenerPosts().then((data) => {
@@ -27,7 +28,10 @@ function Home() {
         })
 
         obtenerUsuario().then((data) => {
-            setUsuariosSugeridos(data);
+            const otrosUsuarios = user
+                ? data.filter((u) => u.id !== user.id)
+                : data
+            setUsuariosSugeridos(otrosUsuarios);
         }).catch((err) => {
             console.error('Error al cargar usuarios sugeridos', err)
         })
@@ -35,14 +39,14 @@ function Home() {
 
     return (
         <div style={{ backgroundColor: '#121312', minHeight: '100vh', color: '#f8f9fa' }} className="pb-5">
-            <header className="container-fluid py-3 border-bottom border-secondary d-flex justify-content-end align-item-center px-4">
-                <div className="d-fex align-item-center gap-2">
+            <header className="container-fluid py-3 border-bottom border-secondary d-flex justify-content-end align-items-center px-4">
+                <div className="d-flex flex-row align-items-center gap-2">
                     <div
-                        className="rounded-circle bg-secondary d-flex justify-content-center align-item-center text-white fw-bold"
-                        style={{ width: '40px', height: '40px', backgroundColor: randomColor(), fontSize: '1.1rem'}}>
-                        MS
+                        className="rounded-circle d-flex justify-content-center align-items-center text-white fw-bold flex-shrink-0 shadow-sm"
+                        style={{ width: '40px', height: '40px', backgroundColor: randomColor(), fontSize: '1.1rem', lineHeight: 1}}>
+                        {inicial}
                     </div>
-                    <span className="fw-bold" style={{ color: '#a67d43' }}>(Perfil)</span>
+                    <span className="fw-bold text-nowrap" style={{ color: '#a67d43' }}>{nombreMostrar}</span>
                 </div>
             </header>
 
@@ -51,7 +55,7 @@ function Home() {
 
                     <aside className="col-12 col-lg-3 mb-4 mb-lg-0">
                         <div className="p-3 rounded border border-secondary shadow-sm" style={{backgroundColor: '#1a1b1a'}}>
-                            <h5 className="fw-bold mb-3" style={{color: '#a67d43'}}>A quien seguir</h5>
+                            <h5 className="fw-bold mb-3" style={{color: '#a67d43'}}>SUGERENCIAS</h5>
 
                             <div className="d-flex flex-column gap-3">
                                 {usuariosSugeridos.length > 0 ? (
@@ -126,7 +130,7 @@ function Home() {
                                 ))}
                             </div>
                         ) : (
-                            <div className="text-center py-5 text-muted">
+                            <div className="text-center py-5 text-light">
                                 <p>No hay publicaciones disponibles todavia.</p>
                             </div>
                         )}
