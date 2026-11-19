@@ -63,41 +63,74 @@ function Login({ onLogin }: LoginProps) {
 
   //este es el formulario en sí
   return (
-    <div>
-      <h2>Iniciar sesión</h2>
+    <div className="d-flex align-items-center py-4 text-light" style={{backgroundColor: '#131213', minHeight: 'calc(100vh - 56px)'}}>
+      <div className="container py-5">
+        <div className="row justify-content-center">
+          <div className="col-12 col-md-8 col-lg-6">
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+            <div className="card bg-dark text-light border-secondary mb-4 shadow-sm">
+              <div className="card-body p-4 text-center">
+                <h1 className="fw-bold mb-2 fs-2" style={{color: '#a67d43'}}>¡Bienvenido a UnaHur Anti-Social Net!</h1>
+                <p className="card-text mb-0 text-light">
+                  La red social de nuestra comunidad. Conectate, compartí tus ideas y enterate de lo que pasa en el campus libre de presiones.
+                </p>
+              </div>
+            </div>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="nickName">Nombre de usuario</label>
-          <input
-            id="nickName"
-            type="text"
-            placeholder="Usuario1"
-            value={nickName}
-            onChange={(evento) => setNickName(evento.target.value)}
-            disabled={loading}
-          />
+            <div className="card bg-dark text-light border-secondary shadow-sm">
+              <div className="card-body p-4">
+                <h2 className="card-title h4 fw-bold mb-4 text-center" style={{color: '#a67d43'}}>Iniciar sesión</h2>
+
+                {error && (
+                  <div className="alert alert-danger py-2" role="alert">
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="text-start">
+                  <div className="mb-3">
+                    <label htmlFor="nickName" className="form-label d-block fw-semibold">Nombre de usuario</label>
+                    <input
+                      id="nickName"
+                      type="text"
+                      className="form-control border-secondary"
+                      placeholder="Usuario1"
+                      value={nickName}
+                      onChange={(evento) => setNickName(evento.target.value)}
+                      disabled={loading}
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label htmlFor="password" className="from-label d-block fw-semibold">Contraseña</label>
+                    <input
+                      id="password"
+                      type="password"
+                      className="form-control border-secondary"
+                      placeholder="123456"
+                      value={password}
+                      onChange={(evento) => setPassword(evento.target.value)}
+                      disabled={loading}
+                    />
+                  </div>
+
+                  <button 
+                    className="btn w-100 fw-semibold text-White" 
+                    style={{backgroundColor: '#ad0013', borderColor: '#ad0013'}} 
+                    type="submit" 
+                    disabled={loading}>
+                      {loading ? 'Ingresando...' : 'Ingresar'}
+                    </button>
+                </form>
+
+                <p className="mt-3 mb-0 small text-secondary">
+                  ¿Todavía no tenés cuenta? <Link to="/register" className="fw-semibold text-decoration-none" style={{color: '#a67d43'}}>Registrate acá</Link>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-        <div>
-          <label htmlFor="password">Contraseña</label>
-          <input
-            id="password"
-            type="password"
-            placeholder="123456"
-            value={password}
-            onChange={(evento) => setPassword(evento.target.value)}
-            disabled={loading}
-          />
-        </div>
-
-        <button type="submit" disabled={loading}>Ingresar</button>
-      </form>
-
-      <p>
-        ¿Todavía no tenés cuenta? <Link to="/register">Registrate acá</Link>
-      </p>
+      </div>
     </div>
   )
 }

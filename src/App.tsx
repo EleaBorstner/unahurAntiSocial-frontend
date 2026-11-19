@@ -5,44 +5,34 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Profile from './pages/Profile';
 import PostDetail from './pages/PostDetail';
-import CreatePost from './pages/CreatePost';
-import {useState} from 'react';
-import type {User} from './types'
+import { CreatePost } from './pages/CreatePost';
+import { Navigate } from 'react-router-dom';
+import { UserProvider, useUser } from './context/UserContext';
 
-function App() { 
-  // acá está el estado del usuario para que lo usen perfil, login y registro
-  // usuario puede ser null o un usuario, y al recargar la página revisa si hay algo en local sotrage para que no se cierre la sesión
-  const [user, setUser] = useState<User | null> (() => { 
-    const savedUser = localStorage.getItem("user")
-    return savedUser ? JSON.parse(savedUser): null
-  })
-
-  // handler para el login, si el usuario está validado de login o registro recibe los datos y setea el estado. 
-  // lo gurda en local storage para la persistencia
-  const handleLogin = (userData: User) => {
-    setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData))
-  }
-
-  // handler para el logout, setea el estado a null y lo borra del storage
-  const handleLogout = () => {
-    setUser(null);
-    localStorage.removeItem("user");
-  };
+function AppContent() { 
+  const {user, login, logout} = useUser()
 
   return (
     <>
-      <Navbar user={user} onLogout={handleLogout} />
+      <Navbar user={user} onLogout={logout} />
       <Routes>
-        <Route path="/" element={<Home user={user} />} />
-        <Route path="/login" element={<Login onLogin={handleLogin}/>} />
-        <Route path="/register" element={<Register onLogin={handleLogin}/>} />
+        <Route path="/" element={user ? <Home user={user} /> : <Navigate to="/login" replace />} />
+        <Route path="/login" element={<Login onLogin={login}/>} />
+        <Route path="/register" element={<Register onLogin={login}/>} />
         <Route path="/profile" element={<Profile user={user} />} />
         <Route path="/post/:id" element={<PostDetail />} />
-        <Route path="/create-post" element={<CreatePost />} />
+        <Route path="/create-post" element={user ? <CreatePost /> : <Navigate to="/login" replace />} />
       </Routes>
     </>
   );
+}
+
+function App() {
+  return (
+    <UserProvider>
+      <AppContent />
+    </UserProvider>
+  )
 }
 
 export default App;

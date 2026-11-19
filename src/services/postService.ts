@@ -30,7 +30,7 @@ export async function obtenerPostPorId(id: number){
     }
 }
 
-export async function crearPost(description: string, userId?: string) {
+export async function crearPost(description: string, userId?: number | string) {
     try {
         const response = await fetch(`${API_URL}/posts`, {
             method: 'POST',
@@ -51,4 +51,21 @@ export async function crearPost(description: string, userId?: string) {
         console.error('Error al crear publicacion:', error)
         throw error
     }
+}
+
+export async function crearPostImage(url: string, postId: number | string) {
+    const response = await fetch(`${API_URL}/postimages`, {
+        method: 'POST',
+        headers: {'content-Type': 'application/json'},
+        body: JSON.stringify({
+            url,
+            postId
+        }),
+    })
+
+    if (!response.ok) {
+        throw new Error('Error al guardar la imagen: ' + response.status)
+    }
+
+    return response.json()
 }

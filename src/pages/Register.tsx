@@ -45,43 +45,71 @@ function Register({ onLogin }: RegisterProps) {
   };
 
   return (
-    <div>
-      <h2>Registrarse</h2>
-      <small>La contraseña asignada para todas las cuentas es <strong>123456</strong>.</small>
-      {/* este error solo se muestra si hay un error, por eso la condición con el && */}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div className="d-flex align-items-center py-4 text-light" style={{backgroundColor: '#131213', minHeight: 'calc(100vh - 56px)'}}>
+      <div className="container">
+        <div className="row justify-content-center">
+          <div className="col-12 col-md-8 col-lg-6">
+            <div className="card bg-dark text-light border-secondary shadow-sm">
+              <div className="card-body p-4">
+                <h2 className="card-title h4 fw-bold mb-2 text-center" style={{color: '#a67d43'}}>
+                  Registrarse
+                </h2>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="nickName">Nombre de usuario</label>
-          <input
-            id="nickName"
-            type="text"
-            placeholder="miUsuario"
-            value={nickName}
-            onChange={(evento) => setNickName(evento.target.value)}
-            disabled={loading}
-          />
+                <p className="small text-secondary text-center mb-4">
+                  La contraseña asignada para todas las cuentas es <strong className="text-light">123456</strong>.
+                </p>
+
+                {/* este error solo se muestra si hay un error, por eso la condición con el && */}
+                {error && (
+                  <div className="alert alert-danger py-2 text-center" role="alert">
+                    {error}
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} className="text-start">
+                  <div className="mb-3">
+                    <label htmlFor="nickName" className="form-label d-block fw-semibold">Nombre de usuario</label>
+                    <input
+                      id="nickName"
+                      type="text"
+                      className="form-control border-secondary"
+                      placeholder="miUsuario"
+                      value={nickName}
+                      onChange={(evento) => setNickName(evento.target.value)}
+                      disabled={loading}
+                    />
+                  </div>
+
+                  <div className="mb-4">
+                    <label htmlFor="email" className="form-label d-block fw-semibold">Correo electrónico</label>
+                    <input
+                      id="email"
+                      type="email"
+                      className="form-control border-secondary"
+                      placeholder="miUsuario@gmail.com"
+                      value={email}
+                      onChange={(evento) => setEmail(evento.target.value)}
+                      disabled={loading}
+                    />
+                  </div>
+
+                  <button 
+                    className="btn w-100 fw-semibold text-White" 
+                    style={{backgroundColor: '#ad0013', borderColor: '#ad0013'}} 
+                    type="submit" 
+                    disabled={loading}>
+                      {loading ? 'Crando cuenta...' : 'Crear cuenta'}
+                    </button>
+                </form>
+
+                <p className="mt-3 mb-0 small text-secondary">
+                  ¿Ya tenés cuenta? <Link to="/login" className="fw-semibold text-decoration-none" style={{color: '#a67d43'}}>Iniciá sesión</Link>
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
-
-        <div>
-          <label htmlFor="email">Correo electrónico</label>
-          <input
-            id="email"
-            type="email"
-            placeholder="miUsuario@gmail.com"
-            value={email}
-            onChange={(evento) => setEmail(evento.target.value)}
-            disabled={loading}
-          />
-        </div>
-
-        <button type="submit" disabled={loading}>Crear cuenta</button>
-      </form>
-
-      <p>
-        ¿Ya tenés cuenta? <Link to="/login">Iniciá sesión</Link>
-      </p>
+      </div>
     </div>
   )
 }
