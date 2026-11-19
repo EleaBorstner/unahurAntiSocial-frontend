@@ -20,7 +20,7 @@ function AppContent() {
         <Route path="/login" element={<Login onLogin={login}/>} />
         <Route path="/register" element={<Register onLogin={login}/>} />
         <Route path="/profile" element={<Profile user={user} />} />
-        <Route path="/post/:id" element={<PostDetail />} />
+        <Route path="/post/:id" element={<PostDetail user={user} />} />
         <Route path="/create-post" element={user ? <CreatePost /> : <Navigate to="/login" replace />} />
       </Routes>
     </>

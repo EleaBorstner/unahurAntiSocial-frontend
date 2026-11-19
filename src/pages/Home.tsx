@@ -152,7 +152,7 @@ function Home({user}: HomeProps) {
                                                 </div>
                                             )}
                                             <div className="d-flex justify-content-between align-items-center mt-3">
-                                                <small style={{color: '#b0b3b8'}}>Comentarios: {post.comments ? post.comments.length : 0}</small>
+                                                <small style={{color: '#b0b3b8'}}>Comentarios: {(post as any).Comments ? (post as any).Comments.length : post.comments ? post.comments.length : 0}</small>
                                                 <Link to={`/post/${post.id}`} className="btn btn-sm text-white fw-bold px-3 flex-shink-0" style={{backgroundColor: '#ad0013'}}>Ver mas</Link>
                                             </div>
                                         </article>

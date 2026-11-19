@@ -258,7 +258,7 @@ function Profile({ user }: ProfileProps) {
 
                   <div className="d-flex justify-content-between align-items-center flex-wrap gap-2">
                     <small style={{color: "#b0b3b8"}}>
-                      Comentarios: {post.comments ? post.comments.length : 0}
+                      Comentarios: {(post as any).Comments ? (post as any).Comments.length : post.comments ? post.comments.length : 0}
                     </small>
 
                     <div className="d-flex gap-2">

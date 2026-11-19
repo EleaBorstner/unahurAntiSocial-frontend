@@ -15,6 +15,7 @@ export interface Post {
     User?: User //este por si hay que mostrar nombre
     images?: PostImage[]
     comments?: Comment[]
+    Comments?: Comment[]
 }
 
 export interface Comment {

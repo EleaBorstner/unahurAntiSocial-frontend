@@ -1,8 +1,8 @@
-import { createContext, useContext, useState, useEffect } from 'react';
-import type { ReactNode } from 'react';
-import type { User } from '../types';
+import { createContext, useContext, useState, useEffect } from "react";
+import type { ReactNode } from "react";
+import type { User } from "../types";
 
-const STORAGE_KEY = "unahur_antisocial_user"
+const STORAGE_KEY = "unahur_antisocial_user";
 
 interface UserContextType {
   user: User | null;
@@ -12,36 +12,32 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-export const UserProvider = ({ children }: { children: ReactNode }) => {
+export function UserProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(() => {
-
-  // 1. Al cargar la app, revisamos si hay un usuario en localStorage
     try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        return saved ? (JSON.parse(saved) as User) : null;
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? (JSON.parse(saved) as User) : null;
     } catch {
-        return null;
+      return null;
     }
-  })
+  });
 
   useEffect(() => {
     try {
-        if (user) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-        } else {
-            localStorage.removeItem(STORAGE_KEY);
-        }
+      if (user) {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+      } else {
+        localStorage.removeItem(STORAGE_KEY);
+      }
     } catch (err) {
-        console.error("Error al persistir usuario en la localStorage:", err)
+      console.error("Error al persistir usuario en localStorage:", err);
     }
   }, [user]);
 
-  // 2. Función para cuando el usuario se loguea
   const login = (userData: User) => {
     setUser(userData);
   };
 
-  // 3. Función para cerrar sesión
   const logout = () => {
     setUser(null);
   };
@@ -51,13 +47,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </UserContext.Provider>
   );
-};
+}
 
-// Hook personalizado para consumir el contexto fácilmente
-export const useUser = () => {
+export function useUser() {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error('useUser debe ser usado dentro de un UserProvider');
+    throw new Error("useUser debe usarse dentro de un UserProvider");
   }
   return context;
-};
+}

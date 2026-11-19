@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import { type SubmitEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useUser } from '../context/UserContext'; // ⚠️ VERIFICAR RUTA DEL CONTEXTO
+import { useUser } from '../context/UserContext';
 import type { Tag, Post } from '../types';
 
-const API_URL = 'http://localhost:3001'; 
+const API_URL = 'http://localhost:3001';
 
 export const CreatePost = () => {
   const { user } = useUser();
@@ -17,13 +17,13 @@ export const CreatePost = () => {
   const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
   const [newTagName, setNewTagName] = useState('');
   const [creatingTag, setCreatingTag] = useState(false);
-  
+
   // Estados de la API
   const [availableTags, setAvailableTags] = useState<Tag[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => { //Esto trae las etiquetas disponibles desde el backend.
+  useEffect(() => {
     const fetchTags = async () => {
       try {
         const response = await axios.get<Tag[]>(`${API_URL}/tags`);
@@ -67,7 +67,7 @@ export const CreatePost = () => {
 
     // Si ya existe en los sugeridos, solo lo marcamos como seleccionado
     const existingTag = availableTags.find(
-      (t) => 
+      (t) =>
         t.name.toLowerCase() === formattedName.toLowerCase() ||
         t.name.replace(/^#+/, '').toLowerCase() === cleanName.toLowerCase()
     );
@@ -121,7 +121,7 @@ export const CreatePost = () => {
       const postResponse = await axios.post<Post>(`${API_URL}/posts`, {
         description,
         userId: user.id,
-        tags: selectedTags.map((tag) => tag.id),
+        tagIds: selectedTags.map((tag) => tag.id),
       });
 
       const createdPost = postResponse.data;
@@ -135,11 +135,9 @@ export const CreatePost = () => {
         });
       }
 
-      // Paso C: Redirigir al perfil o a la home
-      navigate('/profile'); 
-      
+      // Paso C: Redirigir al perfil
+      navigate('/profile');
     } catch (err: any) {
-      // Manejo de errores de Axios
       if (err.response && err.response.data && err.response.data.message) {
         setError(err.response.data.message);
       } else {
@@ -151,15 +149,21 @@ export const CreatePost = () => {
   };
 
   return (
-    // Clases de Bootstrap: container, py-5 (padding vertical), row, justify-content-center
-    <div className="min-vh-100 py-5 pb-5 text-light" style={{backgroundColor: '#121312'}}>
+    <div
+      className="min-vh-100 py-5 pb-5 text-light"
+      style={{ backgroundColor: '#121312' }}
+    >
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-md-8 col-lg-6">
-            
             <div className="card bg-dark text-light border-secondary shadow-sm">
               <div className="card-body p-4">
-                <h2 className="card-title h-4fw-bold mb-4 text-center" style={{color: '#a67d43'}}>Crear Nueva Publicación</h2>
+                <h2
+                  className="card-title h4 fw-bold mb-4 text-center"
+                  style={{ color: '#a67d43' }}
+                >
+                  Crear Nueva Publicación
+                </h2>
 
                 {error && (
                   <div className="alert alert-danger py-2 text-center" role="alert">
@@ -168,10 +172,11 @@ export const CreatePost = () => {
                 )}
 
                 <form onSubmit={handleSubmit}>
-                  
                   {/* Descripción */}
                   <div className="mb-3">
-                    <label className="form-label d-block fw-semibold">Descripción</label>
+                    <label className="form-label d-block fw-semibold">
+                      Descripción
+                    </label>
                     <textarea
                       className="form-control border-secondary"
                       rows={4}
@@ -185,7 +190,9 @@ export const CreatePost = () => {
 
                   {/* Imágenes */}
                   <div className="mb-3">
-                    <label className="form-label d-block fw-semibold">URLs de imágenes (opcional)</label>
+                    <label className="form-label d-block fw-semibold">
+                      URLs de imágenes (opcional)
+                    </label>
                     {imageUrls.map((url, i) => (
                       <div key={i} className="input-group mb-2">
                         <input
@@ -196,9 +203,9 @@ export const CreatePost = () => {
                           onChange={(e) => handleImageChange(i, e.target.value)}
                         />
                         {imageUrls.length > 1 && (
-                          <button 
-                            type="button" 
-                            className="btn btn-outline-danger" 
+                          <button
+                            type="button"
+                            className="btn btn-outline-danger"
                             onClick={() => removeImageField(i)}
                           >
                             X
@@ -206,53 +213,57 @@ export const CreatePost = () => {
                         )}
                       </div>
                     ))}
-                    <button 
-                      type="button" 
-                      className="btn btn-outline-secondary btn-sm mt-1" 
+                    <button
+                      type="button"
+                      className="btn btn-outline-secondary btn-sm mt-1"
                       onClick={addImageField}
                     >
                       + Agregar otra imagen
                     </button>
                   </div>
 
-                  {/* Etiquetas */}
-                  <div className="mb-4">
-                    <label className="form-label d-block fw-semibold">Etiquetas sueridas</label>
-                      {availableTags.length > 0 ?(
-                        <div className="d-flex flex-wrap gap-2">
-                          {availableTags.map((tag) => {
-                            const isSelected = selectedTags.some((t) => t.id === tag.id);
-                            return (
-                              <button
-                                key={tag.id}
-                                type="button"
-                                className="btn btn-sm rounded-pill fw-semibold"
-                                style={
-                                  isSelected
-                                    ? {
-                                        backgroundColor: '#a67d43',
-                                        borderColor: '#a67d43',
-                                        color: '#121312',
-                                      }
-                                    : {
-                                        backgroundColor: 'transparent',
-                                        borderColor: '#6c757d',
-                                        color: '#f8f9fa',
-                                      }
-                                }
-                                onClick={() => toggleTag(tag)}
-                              >
-                                {tag.name}
-                              </button>
-                            );
+                  {/* Etiquetas sugeridas */}
+                  <div className="mb-3">
+                    <label className="form-label d-block fw-semibold">
+                      Etiquetas sugeridas
+                    </label>
+                    {availableTags.length > 0 ? (
+                      <div className="d-flex flex-wrap gap-2">
+                        {availableTags.map((tag) => {
+                          const isSelected = selectedTags.some(
+                            (t) => t.id === tag.id
+                          );
+                          return (
+                            <button
+                              key={tag.id}
+                              type="button"
+                              className="btn btn-sm rounded-pill fw-semibold"
+                              style={
+                                isSelected
+                                  ? {
+                                      backgroundColor: '#a67d43',
+                                      borderColor: '#a67d43',
+                                      color: '#121312',
+                                    }
+                                  : {
+                                      backgroundColor: 'transparent',
+                                      borderColor: '#6c757d',
+                                      color: '#f8f9fa',
+                                    }
+                              }
+                              onClick={() => toggleTag(tag)}
+                            >
+                              {tag.name}
+                            </button>
+                          );
                         })}
                       </div>
-                      ) : (
-                        <small className="text-secondary">
-                          No hay etiquetas sugeridas todavia.
-                        </small>
-                      )}
-                  </div> 
+                    ) : (
+                      <small className="text-secondary">
+                        No hay etiquetas sugeridas todavía.
+                      </small>
+                    )}
+                  </div>
 
                   {/* Campo para escribir un nuevo tag */}
                   <div className="mb-4">
@@ -273,7 +284,7 @@ export const CreatePost = () => {
                         id="newTagInput"
                         type="text"
                         className="form-control border-secondary"
-                        placeholder="Ej: Programacion o #UNAHUR"
+                        placeholder="Ej: Programacion o UNAHUR"
                         value={newTagName}
                         onChange={(e) => setNewTagName(e.target.value)}
                         onKeyDown={(e) => {
@@ -286,14 +297,13 @@ export const CreatePost = () => {
                       />
                       <button
                         type="button"
-                        className="btn fw-semibold"
+                        className="btn fw-semibold text-white"
                         style={{
                           backgroundColor: '#ad0013',
-                          borderColor: '#ad0013',
-                          color: '#121312',
+                          borderColor: '#ad0013'
                         }}
                         onClick={handleAddNewTag}
-                        disabled={creatingTag || !newTagName.trim()}
+                        disabled={creatingTag || !newTagName.replace(/^#+/, '').trim()}
                       >
                         {creatingTag ? 'Agregando...' : 'Agregar tag'}
                       </button>
@@ -302,15 +312,22 @@ export const CreatePost = () => {
 
                   {/* Botón de Enviar */}
                   <div className="d-grid gap-2">
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       className="btn btn-lg fw-semibold text-white"
-                      style={{backgroundColor: '#ad0013', borderColor: '#ad0013'}}
+                      style={{
+                        backgroundColor: '#ad0013',
+                        borderColor: '#ad0013',
+                      }}
                       disabled={loading}
                     >
                       {loading ? (
                         <>
-                          <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                          <span
+                            className="spinner-border spinner-border-sm me-2"
+                            role="status"
+                            aria-hidden="true"
+                          ></span>
                           Publicando...
                         </>
                       ) : (
